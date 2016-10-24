@@ -12,8 +12,8 @@ x_test <- read.table("./data/UCI HAR Dataset/test/X_test.txt")
 y_test <- read.table("./data/UCI HAR Dataset/test/y_test.txt")
 subject_test <- read.table("./data/UCI HAR Dataset/test/subject_test.txt")
 ##step3. merge train and test data
-train <- cbind(subject_train, x_train, y_train)
-test <- cbind(subject_test, x_test, y_test)
+train <- cbind(subject_train, y_train, x_train)
+test <- cbind(subject_test, y_test, x_test)
 tdata <- rbind(train, test)
 
 #2. Extracts only the measurements on the mean and standard deviation for each measurement. 
@@ -21,12 +21,12 @@ tdata <- rbind(train, test)
 featurename <- read.table("./data/UCI HAR Dataset/features.txt")[, 2]
 ##step2. extract mean and std of each measurement
 featureindex <- grep("mean\\(\\)|std\\(\\)", featurename)
-fdata <- tdata[, c(1,2, featureindex+2)]
-colnames(fdata) <- c("subject", "activity", featurename[featureindex])
+fdata <- tdata[, c(1, 2, featureindex+2)]
+colnames(fdata) <- c("subject", "activity", as.character(featurename[featureindex]))
 
 #3. Uses descriptive activity names to name the activities in the data set. 
 ##step1. load activity names into R
-activityname <- read.table("./data/UCI HAR Dataset/activity_labels.txt")
+activityname <- read.table("./data/UCI HAR Dataset/activity_labels.txt", stringsAsFactors = FALSE)
 ##step2. replace number with activity names
 fdata$activity <- factor(fdata$activity, levels = activityname[, 1], labels = activityname[, 2])
 
